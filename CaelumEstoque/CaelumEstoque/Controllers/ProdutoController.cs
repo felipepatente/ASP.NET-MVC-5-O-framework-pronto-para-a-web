@@ -5,27 +5,21 @@ using System.Web;
 using System.Web.Mvc;
 using CaelumEstoque.DAO;
 using CaelumEstoque.Models;
+using CaelumEstoque.Filtros;
 
 namespace CaelumEstoque.Controllers
 {
+    [AutorizacaoFilter]
     public class ProdutoController : Controller
     {
-        [Route("produtos", Name="ListaProdutos")]
+        [Route("produtos", Name="ListaProdutos")]        
         public ActionResult Index()
         {
-            object usuario = Session["usuarioLogado"];
-
-            if (usuario != null)
-            {
-                ProdutosDAO dao = new ProdutosDAO();
-                IList<Produto> produtos = dao.Lista();
-                return View(produtos);
-            }else
-            {
-                return RedirectToAction("Index", "Login");
-            }
+            ProdutosDAO dao = new ProdutosDAO();
+            IList<Produto> produtos = dao.Lista();
+            return View(produtos);         
         }
-
+        
         public ActionResult Form()
         {
             CategoriasDAO categoriaDao = new CategoriasDAO();
@@ -36,6 +30,7 @@ namespace CaelumEstoque.Controllers
         } 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Adiciona(Produto produto)
         {
             int idDaInformatica = 1;
