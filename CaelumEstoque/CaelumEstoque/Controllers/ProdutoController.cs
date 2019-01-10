@@ -14,10 +14,8 @@ namespace CaelumEstoque.Controllers
         public ActionResult Index()
         {
             ProdutosDAO dao = new ProdutosDAO();
-            IList<Produto> produtos = dao.Lista();
-            ViewBag.Produtos = produtos;
-            
-            return View();
+            IList<Produto> produtos = dao.Lista();            
+            return View(produtos);
         }
 
         public ActionResult Form()
@@ -25,17 +23,43 @@ namespace CaelumEstoque.Controllers
             CategoriasDAO categoriaDao = new CategoriasDAO();
             IList<CategoriaDoProduto> categorias = categoriaDao.Lista();
             ViewBag.Categorias = categorias;
+            ViewBag.Produto = new Produto();            
             return View();
         } 
 
         [HttpPost]
         public ActionResult Adiciona(Produto produto)
-        {            
-            ProdutosDAO dao = new ProdutosDAO();
-            dao.Adiciona(produto);
+        {
+            int idDaInformatica = 1;
 
-            return RedirectToAction("Index", "Produto");
+            if (produto.CategoriaId.Equals(idDaInformatica) && produto.Preco < 100)
+            {
+                ModelState.AddModelError("produto.Invalido", "Informatica com preco abaixo de 100 reais");
+            }
+
+            if (ModelState.IsValid)
+            {                
+                ProdutosDAO dao = new ProdutosDAO();
+                dao.Adiciona(produto);
+                
+                return RedirectToAction("Index", "Produto");
+            }else
+            {
+                ViewBag.Produto = produto;
+                CategoriasDAO categoriasDAO = new CategoriasDAO();
+                ViewBag.Categorias = categoriasDAO.Lista();
+                return View("Form");
+            }
+            
         }
 
+        public ActionResult Visualiza(int id)
+        {
+            ProdutosDAO dao = new ProdutosDAO();
+            Produto produto = dao.BuscaPorId(id);
+            ViewBag.Produto = produto;
+            return View();
+        }
+        
     }
 }
