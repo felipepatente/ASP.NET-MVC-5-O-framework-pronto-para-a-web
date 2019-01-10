@@ -34,7 +34,7 @@ namespace CaelumEstoque.DAO
                     .FirstOrDefault();
             }
         }
-
+        
         public void Atualiza(Produto produto)
         {
             using (var contexto = new EstoqueContext())

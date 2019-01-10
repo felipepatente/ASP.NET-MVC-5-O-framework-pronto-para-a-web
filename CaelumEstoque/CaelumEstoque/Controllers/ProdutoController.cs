@@ -13,9 +13,17 @@ namespace CaelumEstoque.Controllers
         [Route("produtos", Name="ListaProdutos")]
         public ActionResult Index()
         {
-            ProdutosDAO dao = new ProdutosDAO();
-            IList<Produto> produtos = dao.Lista();            
-            return View(produtos);
+            object usuario = Session["usuarioLogado"];
+
+            if (usuario != null)
+            {
+                ProdutosDAO dao = new ProdutosDAO();
+                IList<Produto> produtos = dao.Lista();
+                return View(produtos);
+            }else
+            {
+                return RedirectToAction("Index", "Login");
+            }
         }
 
         public ActionResult Form()

@@ -14,7 +14,6 @@ namespace CaelumEstoque.DAO
         public DbSet<CategoriaDoProduto> Categorias { get; set; }
 
         public DbSet<Usuario> Usuarios { get; set; }
-
         
     }
 }
